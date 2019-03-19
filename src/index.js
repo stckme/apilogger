@@ -4,6 +4,7 @@ function truncateString(str, length) {
 }
 
 class ApiLogStore {
+
   constructor(limit) {
     const errorQueue = this.getErrorQueueFromStorage();
     this.limit = limit || 50;
@@ -36,11 +37,13 @@ class ApiLogStore {
 
 const apiLogStore = new ApiLogStore(50);
 
+const oldFetch = window.fetch;
+
 const wrappedFetch = function() {
   return new Promise((resolve, reject) => {
     const [url, { method, body }] = arguments;
 
-    fetch.apply(this, arguments)
+    oldFetch.apply(this, arguments)
       .then((response) => {
         if (response && response.status >= 400) {
           response.json().then((json) => {
