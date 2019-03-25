@@ -27,7 +27,6 @@ class ApiLogger {
 
   updateErrorQueueInStorage() {
     localStorage.setItem('errorQueue', JSON.stringify(this.errorQueue));
-    this.print();
   }
 
   pop() {
@@ -40,7 +39,7 @@ class ApiLogger {
     const store = this;
     return new Promise((resolve, reject) => {
       const [url, { method, body }] = arguments;
-      originalFetch.apply(this, arguments)
+      originalFetch.apply(window, arguments)
         .then((response) => {
           if (response && response.status >= 400) {
             let reqData = null;
@@ -61,6 +60,8 @@ class ApiLogger {
               });
               resolve(response);
             });
+          } else {
+            resolve(response);
           }
         })
         .catch((error) => {
