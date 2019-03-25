@@ -1,31 +1,32 @@
-function truncateString(str, length) {
-  var dots = str.length > length ? '...' : '';
-  return str.substring(0, length) + dots;
-}
-
-class ApiLogStore {
-
+class ApiLogger {
   constructor(limit) {
     const errorQueue = this.getErrorQueueFromStorage();
-    this.limit = limit || 50;
+    if (limit && errorQueue && errorQueue.limit) {
+      console.log(
+        `ApiLogger has already a limit. please use changeLimit function from Logger Instance.`
+      )
+    }
+    errorQueue.limit = errorQueue.limit || limit || 50;
+    this.limit = errorQueue.limit || limit || 50;
     this.count = errorQueue.length;
     this.errorQueue = errorQueue;
-    window.apiLogStore = this;
+    this.fetch = window.fetch;
   }
 
   push(value) {
     if (this.count === this.limit) this.pop();
-    this.errorQueue.push(value);
+    this.errorQueue.errors.push(value);
     this.count++;
     this.updateErrorQueueInStorage();
   }
 
   getErrorQueueFromStorage() {
-    return JSON.parse(localStorage.getItem('errorQueue')) || [];
+    return JSON.parse(localStorage.getItem('errorQueue')) || {limit: 0, errors: []};
   }
 
   updateErrorQueueInStorage() {
     localStorage.setItem('errorQueue', JSON.stringify(this.errorQueue));
+    this.print();
   }
 
   pop() {
@@ -33,36 +34,54 @@ class ApiLogStore {
     this.errorQueue.shift()
     this.count--;
   }
-}
 
-const apiLogStore = new ApiLogStore(50);
-
-const oldFetch = window.fetch;
-
-const wrappedFetch = function() {
-  return new Promise((resolve, reject) => {
-    const [url, { method, body }] = arguments;
-
-    oldFetch.apply(this, arguments)
-      .then((response) => {
-        if (response && response.status >= 400) {
-          response.json().then((json) => {
-            apiLogStore.push({
-              id: new Date().getTime(),
-              url,
-              method,
-              body: body && truncateString(JSON.stringify(body), 50),
-              response: truncateString(JSON.stringify(json), 50),
-              status: response.status
+  wrappedFetch () {
+    const store = this;
+    return new Promise((resolve, reject) => {
+      const [url, { method, body }] = arguments;
+      this.fetch.apply(this, arguments)
+        .then((response) => {
+          if (response && response.status >= 400) {
+            let reqData = null;
+            if (typeof body === 'object') {
+               reqData = body && this.truncateString(JSON.stringify(body), 50);
+            } else {
+              reqData = body;
+            }
+            response.text().then((text) => {
+              store.push({
+                id: new Date().getTime(),
+                url,
+                method,
+                body: reqData,
+                response: this.truncateString(text, 50),
+                status: response.status,
+                contentType: response.headers.get("content-type")
+              });
+              resolve(response);
             });
-          });
-        }
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      })
-  });
+          }
+        })
+        .catch((error) => {
+          reject(error);
+        })
+    });
+  }
+
+  truncateString(str, length) {
+    var dots = str.length > length ? '...' : '';
+    return str.substring(0, length) + dots;
+  }
+
+  print() {
+    console.table(this.getErrorQueueFromStorage().errors);
+  }
+
+  changeLimit(limit) {
+    this.errorQueue.limit = limit;
+    this.limit = limit;
+    this.updateErrorQueueInStorage();
+  }
 }
 
-window.fetch = wrappedFetch;
+export default ApiLogger;
