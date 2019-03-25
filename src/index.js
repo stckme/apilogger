@@ -1,3 +1,5 @@
+export const originalFetch = window.fetch;
+
 class ApiLogger {
   constructor(limit) {
     const errorQueue = this.getErrorQueueFromStorage();
@@ -10,7 +12,6 @@ class ApiLogger {
     this.limit = errorQueue.limit || limit || 50;
     this.count = errorQueue.length;
     this.errorQueue = errorQueue;
-    this.fetch = window.fetch;
   }
 
   push(value) {
@@ -39,7 +40,7 @@ class ApiLogger {
     const store = this;
     return new Promise((resolve, reject) => {
       const [url, { method, body }] = arguments;
-      this.fetch.apply(this, arguments)
+      originalFetch.apply(this, arguments)
         .then((response) => {
           if (response && response.status >= 400) {
             let reqData = null;
