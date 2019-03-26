@@ -10,7 +10,7 @@ class ApiLogger {
     }
     errorQueue.limit = errorQueue.limit || limit || 50;
     this.limit = errorQueue.limit || limit || 50;
-    this.count = errorQueue.length;
+    this.count = errorQueue.errors.length || 0;
     this.errorQueue = errorQueue;
   }
 
