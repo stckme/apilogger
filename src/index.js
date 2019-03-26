@@ -87,4 +87,4 @@ class ApiLogger {
   }
 }
 
-export default ApiLogger;
+module.exports = ApiLogger;
