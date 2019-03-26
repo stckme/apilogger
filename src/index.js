@@ -12,7 +12,7 @@ class ApiLogger {
     this.limit = errorQueue.limit || limit || 50;
     this.count = errorQueue.errors.length || 0;
     this.errorQueue = errorQueue;
-    window.apiLogger = apiLogger;
+    window.apiLogger = this;
   }
 
   push(value) {
