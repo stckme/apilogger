@@ -3,15 +3,20 @@
 
 ## usage instructions
 
-To log http failures codes in localstorage you need to do replace the fetch function with wrappedFetch function as written bellow.
+To log http failure codes in localStorage, you need to polyfill window.fetch as written in following code.
+
+Import apilogger constructor
 ```
 import ApiLogger from 'apilogger';
-const apiLogger = new ApiLogger(limit=50); # pass limit in ApiLogger
-window.fetch = apiLogger.wrappedFetch.bind(apiLogger); # replace original fetch
-window.apiLogger = apiLogger; # make apilogger available globlay
+```
+Create apiLogger instance by passing error queue limit.
+```
+const apiLogger = new ApiLogger(limit=50);
+```
+PolyFill original fetch with Apilogger fetch
+```
+window.fetch = apiLogger.wrappedFetch.bind(apiLogger);
 ```
 
-To check print the log use following code
-```
-apiLogger.print();
-```
+After creating instance, you can check logs in table format using following code.
+```apiLogger.print();```
