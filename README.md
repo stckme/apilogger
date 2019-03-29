@@ -13,7 +13,7 @@ Create apiLogger instance by passing error queue limit.
 ```
 const apiLogger = new ApiLogger(limit=50);
 ```
-PolyFill original fetch with Apilogger fetch
+replace original fetch with Apilogger fetch
 ```
 window.fetch = apiLogger.wrappedFetch;
 ```
