@@ -13,6 +13,7 @@ class ApiLogger {
     this.count = errorQueue.errors.length || 0;
     this.errorQueue = errorQueue;
     window.apiLogger = this;
+    this.wrappedFetch = this.wrappedFetch.bind(this);
   }
 
   push(value) {
@@ -46,8 +47,8 @@ class ApiLogger {
             let reqData = null;
             if (typeof body === 'object') {
                reqData = body && this.truncateString(JSON.stringify(body), 50);
-            } else {
-              reqData = body;
+            } else if (typeof body === 'string') {
+               reqData = this.truncateString(body, 50);
             }
             response.text().then((text) => {
               store.push({
@@ -87,4 +88,4 @@ class ApiLogger {
   }
 }
 
-module.exports = ApiLogger;
+export default ApiLogger;
