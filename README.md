@@ -15,7 +15,7 @@ const apiLogger = new ApiLogger(limit=50);
 ```
 PolyFill original fetch with Apilogger fetch
 ```
-window.fetch = apiLogger.wrappedFetch.bind(apiLogger);
+window.fetch = apiLogger.wrappedFetch;
 ```
 
 After creating instance, you can check logs in table format using following code.
