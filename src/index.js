@@ -33,7 +33,7 @@ class ApiLogger {
 
   pop() {
     if (this.count === 0) return
-    this.errorQueue.shift()
+    this.errorQueue.errors.shift()
     this.count--;
   }
 
