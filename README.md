@@ -3,7 +3,7 @@
 
 ## usage instructions
 
-To log http failure codes in localStorage, you need to polyfill window.fetch as written in following code.
+To log http failure codes in localStorage, you need to replace window.fetch as written in following code.
 
 Import apilogger constructor
 ```
