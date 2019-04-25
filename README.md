@@ -11,7 +11,7 @@ import ApiLogger from 'apilogger';
 ```
 Create apiLogger instance by passing error queue limit.
 ```
-const apiLogger = new ApiLogger(limit=50);
+const apiLogger = new ApiLogger(limit);
 ```
 replace original fetch with Apilogger fetch
 ```
