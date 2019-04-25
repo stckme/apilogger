@@ -1,5 +1,6 @@
 import assert from 'assert';
-import ApiLogger from '../src';
+import ApiLogger from '../dist/main.js';
+
 var apiLogger = new ApiLogger(4);
 
 window.fetch = apiLogger.wrappedFetch;

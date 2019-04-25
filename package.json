@@ -4,7 +4,7 @@
   "description": "Logs api errors in localstorage",
   "main": "dist/main.js",
   "scripts": {
-    "test": "mocha --require @babel/register --file ./test/test-setup.js",
+    "test": "npm run build && mocha --require @babel/register --file ./test/test-setup.js",
     "build": "webpack --config webpack.config.js"
   },
   "author": "\"Ujjwal Mishra\"",
