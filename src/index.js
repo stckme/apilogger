@@ -1,8 +1,7 @@
 class ApiLogger {
   constructor(limit) {
     if (window.apiLogger) {
-      console.info('Apilogger already have a instance. Returning old instance, not allowed to create new.')
-      return window.apiLogger
+      return window.apiLogger;
     }
     const errorQueue = this.getErrorQueueFromStorage();
     if (limit && errorQueue && errorQueue.limit) {
