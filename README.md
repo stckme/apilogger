@@ -1,5 +1,5 @@
 ## Installation
-`npm install --save apilogger`
+`npm install --save git+https://github.com/ujjwalmishra09/apilogger.git#v1.0.0`
 
 ## usage instructions
 
