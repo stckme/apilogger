@@ -58,25 +58,26 @@ class ApiLogger {
 
       this.originalFetch.apply(window, arguments)
         .then((response) => {
-          if (response && response.status >= 400) {
+          const clonedResponse = response && response.clone();
+          if (clonedResponse && clonedResponse.status >= 400) {
             body = body && this.getBody(body);
-            const contentType = response.headers.get("content-type");
+            const contentType = clonedResponse.headers.get("content-type");
             const logData = {
               id: new Date().getTime(),
               url,
               method,
               body,
-              status: response.status,
-              contentType: response.headers.get("content-type")
+              status: clonedResponse.status,
+              contentType: clonedResponse.headers.get("content-type")
             }
             if (contentType && contentType.includes("application/json")) {
-              return response.clone().json().then((json) => {
+              return clonedResponse.clone().json().then((json) => {
                 logData.response = json
                 store.push(logData);
                 resolve(response);
               });
             } else {
-              return response.clone().text().then((text) => {
+              return clonedResponse.clone().text().then((text) => {
                 logData.response = text;
                 store.push(logData);
                 resolve(response);
