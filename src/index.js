@@ -70,13 +70,13 @@ class ApiLogger {
               contentType: response.headers.get("content-type")
             }
             if (contentType && contentType.includes("application/json")) {
-              return response.json().then((json) => {
+              return response.clone().json().then((json) => {
                 logData.response = json
                 store.push(logData);
                 resolve(response);
               });
             } else {
-              response.text().then((text) => {
+              return response.clone().text().then((text) => {
                 logData.response = text;
                 store.push(logData);
                 resolve(response);
