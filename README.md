@@ -20,4 +20,11 @@ window.fetch = apiLogger.wrappedFetch;
 ```
 
 After creating instance, you can check logs in table format using following code.
-```apiLogger.print();```
+```
+apiLogger.print();
+```
+
+You can use native fetch reference for network request as shown in follwoing code.
+```
+const nativeFetch = apiLogger.originalFetch;
+```
